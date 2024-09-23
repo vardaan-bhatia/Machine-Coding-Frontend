@@ -9,6 +9,7 @@ let secondBasket = 0;
 basket1.innerText = totalapples;
 basket2.innerText = secondBasket;
 
+// to update the count text
 let updateHtml = () => {
   basket1.innerText = totalapples;
   basket2.innerText = secondBasket;
