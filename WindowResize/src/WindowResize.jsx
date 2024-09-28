@@ -1,45 +1,57 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const WindowResize = () => {
-  const [windowDimensions, setWindowDimensions] = useState({
-    width: window.innerWidth,
+  const [windowSize, setWindowSize] = useState({
     height: window.innerHeight,
+    width: window.innerWidth,
   });
-
-  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
-  const [message, setMessage] = useState("");
+  const [bgColor, setBgColor] = useState("yellow");
+  const [text, setText] = useState("large screen");
 
   const handleResize = () => {
-    const { innerWidth, innerHeight } = window;
+    const newWidth = window.innerWidth;
+    const newHeight = window.innerHeight;
 
-    setWindowDimensions({ width: innerWidth, height: innerHeight });
+    setWindowSize({ height: newHeight, width: newWidth });
 
-    if (innerWidth < 600) {
-      setBackgroundColor("#ffcccc");
-      setMessage("Small screen detected!");
-    } else if (innerWidth < 1200) {
-      setBackgroundColor("#ccffcc");
-      setMessage("Medium screen detected!");
+    // Update background color and text based on width
+    if (newWidth < 600) {
+      setBgColor("blue");
+      setText("small screen");
+    } else if (newWidth < 1200) {
+      setBgColor("green");
+      setText("medium screen");
     } else {
-      setBackgroundColor("#ccccff");
-      setMessage("Large screen detected!");
+      setBgColor("yellow");
+      setText("large screen");
     }
   };
 
   useEffect(() => {
+    // Add resize event listener
     window.addEventListener("resize", handleResize);
 
+    // Remove event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
-    <div style={{ padding: "20px", textAlign: "center", backgroundColor }}>
-      <h1>Window Dimensions</h1>
-      <p>Width: {windowDimensions.width}px</p>
-      <p>Height: {windowDimensions.height}px</p>
-      <h2>{message}</h2>
+    <div
+      style={{
+        backgroundColor: bgColor,
+        color: "black",
+        fontWeight: "bold",
+        padding: "20px",
+        textAlign: "center",
+        fontSize: "larger",
+      }}
+    >
+      <h1>Window Resize</h1>
+      <p>Window Height: {windowSize.height}</p>
+      <p>Window Width: {windowSize.width}</p>
+      <p>{text}</p>
     </div>
   );
 };
