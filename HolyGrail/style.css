@@ -61,25 +61,13 @@ footer {
 
 @media (max-width: 768px) {
   .parent {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(5, auto);
+    grid: repeat(5, auto) / 1fr;
   }
+  .first,
+  main,
+  .third,
+  footer,
   header {
-    grid-column: 1/2;
-  }
-  .first {
-    grid-column: 1/2;
-  }
-
-  main {
-    grid-column: 1/2;
-  }
-
-  .third {
-    grid-column: 1/2;
-  }
-
-  footer {
     grid-column: 1/2;
   }
 }
