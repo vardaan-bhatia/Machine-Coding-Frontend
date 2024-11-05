@@ -1,11 +1,15 @@
-body,
-html {
+*{
   margin: 0;
   padding: 0;
+}
+
+body,
+html {
   font-family: sans-serif;
   color: white;
   background-color: #1f1f1f;
 }
+
  .App{
     display: flex;
     align-items: center;
