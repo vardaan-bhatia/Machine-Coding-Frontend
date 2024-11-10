@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const Circle = () => {
-  const [digit, setDigit] = useState(null);
+  const [value, setValue] = useState("");
 
-  // Recursive function to create nested circles
   const createNestedCircle = (level) => {
-    if (level <= 0) return null; // Base case to stop recursion
-
+    if (level <= 0) return null;
     return (
       <div className="circle" key={level}>
         {createNestedCircle(level - 1)}
@@ -18,16 +16,16 @@ const Circle = () => {
     <>
       <div className="input">
         <input
-          style={{ padding: "0.5rem", width: "9rem" }}
           type="number"
-          placeholder="enter "
-          value={digit || ""}
-          onChange={(e) => setDigit(e.target.value)}
+          name="digit"
+          id="digit"
+          value={value}
+          placeholder="Enter any digit"
+          onChange={(e) => setValue(e.target.value)}
         />
       </div>
-
       <div className="circle-container">
-        {digit && createNestedCircle(Number(digit))}
+        {value && createNestedCircle(Number(value))}
       </div>
     </>
   );

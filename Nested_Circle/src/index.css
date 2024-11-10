@@ -18,8 +18,8 @@
 }
 
 .circle {
-  width: 500px;
-  height: 500px;
+  width: 600px;
+  height: 600px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,11 +29,12 @@
 }
 
 .circle div {
-  width: 75%; /* Adjusts the size of each nested circle */
-  height: 75%;
+  width: 90%; /* Adjusts the size of each nested circle */
+  height: 90%;
   border: 1px solid black;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 4px 2px 3px rgb(231, 227, 13);
 }

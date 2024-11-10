@@ -1,90 +1,98 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useState, useCallback } from "react";
+import { TodoItem } from "./TodoItem";
 export const Todo = () => {
   const [todo, setTodo] = useState([]);
   const [value, setValue] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState({});
 
-  const handleAdd = () => {
+  // Handle adding new task
+  const handleAdd = useCallback(() => {
     if (value.trim()) {
-      setTodo((prev) => [value, ...prev]);
+      setTodo((prev) => [...prev, { task: value, completed: false }]);
       setValue("");
     }
-  };
+  }, [value]);
 
-  const onKeyDown = (e) => {
-    if (e.key === "Enter") {
-      if (editingIndex === null) {
-        handleAdd(); // Add task if not editing
-      } else {
-        handleSaveEdit(); // Save edited task if editing
-      }
-    }
-  };
-
-  const handleDelete = (id) => {
-    const filteredTodo = todo.filter((_, i) => id !== i);
-    setTodo(filteredTodo);
-  };
-
-  const handleEdit = (id) => {
-    setValue(todo[id]);
-    setEditingIndex(id); // Set the index of the item being edited
-  };
-
-  const handleSaveEdit = () => {
+  // Handle saving an edited task
+  const handleSaveEdit = useCallback(() => {
     if (editingIndex !== null && value.trim()) {
       const updatedTodo = [...todo];
-      updatedTodo[editingIndex] = value; // Update the task
+      updatedTodo[editingIndex] = {
+        task: value,
+        completed: isChecked[editingIndex],
+      };
       setTodo(updatedTodo);
-      setValue(""); // Clear input
-      setEditingIndex(null); // Reset editing state
+      setValue("");
+      setEditingIndex(null);
     }
-  };
+  }, [editingIndex, value, isChecked, todo]);
 
-  const handleChcked = (id) => {
+  // Toggle task completion (checked state)
+  const handleChecked = useCallback((id) => {
     setIsChecked((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
+  }, []);
+
+  // Handle deleting a task
+  const handleDelete = useCallback(
+    (id) => {
+      const filteredTodo = todo.filter((_, i) => id !== i);
+      setTodo(filteredTodo);
+    },
+    [todo]
+  );
+
+  // Handle editing a task
+  const handleEdit = useCallback(
+    (id) => {
+      setValue(todo[id].task);
+      setEditingIndex(id);
+    },
+    [todo]
+  );
+
+  // Handle keydown for adding/editing task
+  const onKeyDown = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        if (editingIndex === null) {
+          handleAdd();
+        } else {
+          handleSaveEdit();
+        }
+      }
+    },
+    [editingIndex, handleAdd, handleSaveEdit]
+  );
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div style={{ marginBottom: "20px" }}>
         <input
           type="text"
-          className="text"
-          onKeyDown={onKeyDown}
           value={value}
           placeholder="Enter your new task..."
           onChange={(e) => setValue(e.target.value)}
+          onKeyDown={onKeyDown}
+          aria-label="Add new task"
         />
         <button onClick={editingIndex === null ? handleAdd : handleSaveEdit}>
-          {editingIndex === null ? "Add" : "Save"} {/* Button text changes */}
+          {editingIndex === null ? "Add" : "Save"}
         </button>
       </div>
+
       <div className="todo_list">
-        {todo &&
-          todo.map((item, index) => (
-            <div
-              style={{ display: "flex", justifyContent: "space-between" }}
-              key={index}
-            >
-              <input type="checkbox" onClick={() => handleChcked(index)} />
-              <span
-                style={{
-                  textDecoration: isChecked ? "line-through" : "none",
-                  color: isChecked ? "gray" : "black", // Change color if checked
-                  fontWeight: isChecked ? "normal" : "bold", // Change font weight if checked
-                }}
-              >
-                {item}
-              </span>
-              <span style={{ cursor: "pointer" }}>
-                <span onClick={() => handleDelete(index)}>🗑️</span>
-                <span onClick={() => handleEdit(index)}>✏️</span>
-              </span>
-            </div>
-          ))}
+        {todo.map((item, index) => (
+          <TodoItem
+            key={index}
+            item={item.task}
+            index={index}
+            onChecked={handleChecked}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            isChecked={isChecked}
+          />
+        ))}
       </div>
     </div>
   );
