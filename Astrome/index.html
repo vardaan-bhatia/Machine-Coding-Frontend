@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Bar Animation</title>
+    <style>
+      /*default page style*/
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        display: flex;
+        width: 500px;
+        height: 250px;
+        background-color: black;
+        border: 10px solid black;
+        overflow: hidden;
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      .bar {
+        width: 20%;
+        height: 100%;
+        position: absolute;
+        bottom: 0;
+        transition: height 0.5s ease;
+      }
+
+      #bar1 {
+        background-color: purple;
+        left: 0;
+      }
+      #bar2 {
+        background-color: green;
+        left: 20%;
+      }
+      #bar3 {
+        background-color: blue;
+        left: 40%;
+      }
+      #bar4 {
+        background-color: yellow;
+        left: 60%;
+      }
+      #bar5 {
+        background-color: pink;
+        left: 80%;
+      }
+
+      .control {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 15px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 15px;
+        border-radius: 5px;
+      }
+      .start {
+        background-color: green;
+      }
+      .reset {
+        background-color: purple;
+      }
+      .stop {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <!--main container div-->
+    <div class="container">
+      <div class="bar" id="bar1"></div>
+      <div class="bar" id="bar2"></div>
+      <div class="bar" id="bar3"></div>
+      <div class="bar" id="bar4"></div>
+      <div class="bar" id="bar5"></div>
+    </div>
+
+    <!--button for control-->
+    <div class="control">
+      <button class="start" onclick="startAnimation()">Start</button>
+      <button class="reset" onclick="resetAnimation()">Reset</button>
+      <button class="stop" onclick="stopAnimation()">Stop</button>
+    </div>
+
+    <script>
+      const bars = document.querySelectorAll(".bar");
+      let animationInterval;
+      let isAnimation = false;
+
+      // function to start animation
+      const startAnimation = () => {
+        if (isAnimation) return;
+        isAnimation = true;
+
+        animationInterval = setInterval(() => {
+          bars.forEach((bar) => {
+            // here i am trying to generate the random height using Math.random()
+
+            const randomHeight = Math.floor(Math.random() * 150) + 20;
+            bar.style.height = `${randomHeight}px`;
+          });
+        }, 500);
+      };
+      // function to stop animation
+
+      const stopAnimation = () => {
+        clearInterval(animationInterval);
+        isAnimation = false;
+      };
+
+      // function to reset animation
+
+      const resetAnimation = () => {
+        stopAnimation();
+        bars.forEach((bar) => {
+          bar.style.height = "100%";
+        });
+      };
+    </script>
+  </body>
+</html>
