@@ -1,0 +1,33 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+  gap: 20px;
+}
+.input {
+  margin-bottom: 15px;
+  height: 15px;
+  width: 600px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid black;
+  font-size: large;
+}
+.list {
+  margin-top: 10px;
+  list-style: none;
+}
+.item {
+  padding: 8px;
+}
+.item:hover {
+  background-color: #e8e7ab;
+  cursor: pointer;
+}

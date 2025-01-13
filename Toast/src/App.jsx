@@ -1,9 +1,10 @@
+import ToastContainer from "./components/ToastContainer";
+
 const App = () => {
+  const data = ["warning", "success", "danger"];
   return (
     <>
-      <div>
-        <h1>hey</h1>
-      </div>
+      <ToastContainer />
     </>
   );
 };
