@@ -31,3 +31,8 @@
   background-color: #e8e7ab;
   cursor: pointer;
 }
+span {
+  background-color: yellow;
+  font-weight: bold;
+  color: black;
+}

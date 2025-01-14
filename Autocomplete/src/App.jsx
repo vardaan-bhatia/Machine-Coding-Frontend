@@ -15,6 +15,21 @@ const App = () => {
     ref.current.focus();
   }, []);
 
+  const highlightText = (text, query) => {
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, "gi");
+    return text
+      .split(regex)
+      .map((part, index) =>
+        regex.test(part) ? <span key={index}>{part}</span> : part
+      );
+  };
+  useEffect(() => {
+    if (data && data.products) {
+      localStorage.setItem("apiData", JSON.stringify(data.products));
+    }
+  }, [data]);
+
   return (
     <>
       <div className="App">
@@ -37,7 +52,9 @@ const App = () => {
               <ul className="list">
                 {data.products.slice(0, 10).map((item) => (
                   <li key={item.id}>
-                    <h3 className="item">{item.title}</h3>
+                    <h3 className="item">
+                      {highlightText(item.title, debounceValue)}
+                    </h3>
                   </li>
                 ))}
               </ul>
