@@ -13,7 +13,7 @@ export const useThrottle = (value, delay) => {
         lastExecutedRef.current = now; // Update the last executed time
       }
     }, delay);
-
+    suar;
     // Clean up interval on unmount or when value/delay changes
     return () => {
       clearInterval(handler);

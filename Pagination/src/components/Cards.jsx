@@ -1,86 +1,51 @@
-import React from "react";
-import { useFetch } from "../hooks/useFetch";
-import "../index.css";
 import { useState } from "react";
+import { useFetch } from "../hooks/useFetch";
 
 const Cards = () => {
-  const [page, setpage] = useState(1);
-  const { data, error, loading } = useFetch(
-    "https://dummyapi.online/api/pokemon"
-  );
+  const [page, setPage] = useState(1);
+  const cardPerPage = 6;
+  const { data, error, loading } = useFetch("https://dummyjson.com/products");
 
-  if (error) {
-    return <p>{error}</p>;
-  }
-  if (loading) {
-    return <p>loading...</p>;
-  }
-  const cardperPage = 8;
-  const totalPage = [...Array(Math.ceil(data.length / cardperPage))];
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error.message || "An error occurred"}</p>;
+  if (!data || !data.products) return <p>No images available</p>;
 
-  const handlePagination = (index) => {
-    setpage(index);
-  };
+  const totalPage = Math.ceil(data.products.length / cardPerPage);
 
-  const handleDecrement = () => {
-    if (page > 1) {
-      setpage(page - 1);
-    }
-  };
-  const handleIncrement = () => {
-    if (page < totalPage.length) {
-      setpage(page + 1);
-    }
-  };
+  const handlePagination = (index) => setPage(index);
+  const handleDecrement = () => page > 1 && setPage(page - 1);
+  const handleIncrement = () => page < totalPage && setPage(page + 1);
 
   return (
-    <>
-      <div className="main">
-        <ul className="pokemon">
-          {data
-            .slice(page * cardperPage - cardperPage, page * cardperPage)
-            .map((e) => (
-              <li key={e.id} className="item">
-                <span>
-                  <h1>
-                    {e.id}- {e.pokemon}
-                  </h1>
-                  <h2>Ability: {e.abilities}</h2>
-                  <img src={e.image_url} alt="" />
-                </span>
-              </li>
-            ))}
-        </ul>
-
-        <div className="pagination">
-          <span
-            role="button"
-            aria-label="Previous Page"
-            onClick={handleDecrement}
-            className={page === 1 ? "disabled" : ""}
-          >
-            ◀️
-          </span>
-          {totalPage.map((_, i) => (
-            <span
-              key={i}
-              onClick={() => handlePagination(i + 1)}
-              className={page === i + 1 ? "selected-page" : ""}
-            >
-              {i + 1}
-            </span>
+    <div className="main">
+      <ul className="image-grid">
+        {data.products
+          .slice((page - 1) * cardPerPage, page * cardPerPage)
+          .map((product, index) => (
+            <li key={index} className="item">
+              <img src={product.thumbnail} alt={`Product ${index}`} />
+            </li>
           ))}
-          <span
-            role="button"
-            aria-label="Next Page"
-            onClick={handleIncrement}
-            className={page === totalPage.length ? "disabled" : ""}
+      </ul>
+
+      <div className="pagination">
+        <button onClick={handleDecrement} disabled={page === 1}>
+          ◀️
+        </button>
+        {[...Array(totalPage)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => handlePagination(i + 1)}
+            className={page === i + 1 ? "active" : ""}
           >
-            ▶️
-          </span>
-        </div>
+            {i + 1}
+          </button>
+        ))}
+        <button onClick={handleIncrement} disabled={page === totalPage}>
+          ▶️
+        </button>
       </div>
-    </>
+    </div>
   );
 };
 

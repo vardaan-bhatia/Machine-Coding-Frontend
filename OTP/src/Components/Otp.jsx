@@ -1,72 +1,69 @@
-import React, { useRef } from "react";
-import { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "../index.css";
 
-const Otp = ({ Length = 6, phoneNumber }) => {
-  const otpBoxes = new Array(Length).fill("");
-  const [otpField, setotpField] = useState(otpBoxes);
+const Otp = ({ Length = 6 }) => {
+  const [otpField, setOtpField] = useState(new Array(Length).fill(""));
   const ref = useRef([]);
 
-  const handleKey = (e, index) => {
-    const key = e.key;
-    const copyfield = [...otpField];
-    if (key == "Backspace") {
-      copyfield[index] = "";
-      setotpField(copyfield);
-      if (index > 0) {
-        ref.current[index - 1].focus();
-      }
-    }
-    if (key == "ArrowLeft") {
-      if (index > 0) {
-        ref.current[index - 1].focus();
-      }
-    }
-
-    if (key == "ArrowRight") {
-      if (index < otpField.length - 1) {
-        ref.current[index + 1].focus();
-      }
-    }
-    if (key >= 0 && key <= 9) {
-      copyfield[index] = key;
-      if (index < otpField.length - 1) {
-        ref.current[index + 1].focus();
-      }
-      setotpField(copyfield);
-    }
-  };
   useEffect(() => {
-    ref.current["0"].focus();
+    if (ref.current[0]) {
+      ref.current[0].focus();
+    }
   }, []);
 
-  const handleChange = (e, index) => {
-    const value = e.target.value;
-    const copyfield = [...otpField];
-    copyfield[index] = value.slice(-1);
-    setotpField(copyfield);
+  const handleKey = (e, index) => {
+    if (e.key === "Backspace") {
+      setOtpField((prev) => {
+        const updatedOtp = [...prev];
+        updatedOtp[index] = "";
+        return updatedOtp;
+      });
 
-    if (value && index < otpField.length - 1) {
-      ref.current[index + 1].focus();
+      if (index > 0) ref.current[index - 1]?.focus();
+    }
+
+    if (e.key === "ArrowLeft" && index > 0) {
+      ref.current[index - 1]?.focus();
+    }
+
+    if (e.key === "ArrowRight" && index < otpField.length - 1) {
+      ref.current[index + 1]?.focus();
+    }
+  };
+
+  const handleChange = (e, index) => {
+    const value = e.target.value.replace(/\D/g, ""); // Only digits allowed
+    if (!value) return;
+
+    setOtpField((prev) => {
+      const updatedOtp = [...prev];
+      updatedOtp[index] = value.slice(-1); // Ensure only one character
+      return updatedOtp;
+    });
+
+    if (index < otpField.length - 1) {
+      ref.current[index + 1]?.focus();
     }
   };
 
   return (
     <div className="main">
-      <h1
-        style={{ textAlign: "center" }}
-      >{`Enter otp sent to ${phoneNumber}`}</h1>
-      {otpField.map((value, index) => (
-        <input
-          className="otp-field"
-          key={index}
-          ref={(c) => (ref.current[index] = c)}
-          type="text"
-          value={value}
-          onKeyDown={(e) => handleKey(e, index)}
-          onChange={(e) => handleChange(e, index)}
-        />
-      ))}
+      <h1 style={{ textAlign: "center" }}>{`Enter OTP `}</h1>
+      <div className="otp-container">
+        {otpField.map((value, index) => (
+          <input
+            className="otp-field"
+            key={index}
+            ref={(el) => (ref.current[index] = el)}
+            type="text"
+            value={value}
+            onKeyDown={(e) => handleKey(e, index)}
+            onChange={(e) => handleChange(e, index)}
+            maxLength="1"
+            inputMode="numeric"
+          />
+        ))}
+      </div>
     </div>
   );
 };
