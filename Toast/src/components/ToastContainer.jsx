@@ -1,60 +1,50 @@
-import { useRef, useState, useCallback, useEffect } from "react";
+import React, { useRef, useState } from "react";
 
-export default function ToastContainer() {
+const ToastContainer = () => {
   const [toasts, setToasts] = useState([]);
-  const timersRef = useRef({});
+  const timeRef = useRef({});
 
-  // Cleanup timers on unmount
-  useEffect(() => {
-    return () => {
-      Object.values(timersRef.current).forEach(clearTimeout);
-    };
-  }, []);
+  const handleDisappear = (ID) => {
+    if (timeRef.current[ID]) {
+      clearTimeout(timeRef.current[ID]);
+      delete timeRef.current[ID];
+    }
+    setToasts((prev) => prev.filter((toast) => toast.id !== ID));
+  };
 
-  const handleClose = useCallback((id) => {
-    clearTimeout(timersRef.current[id]);
-    delete timersRef.current[id];
-    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
-  }, []);
+  const handleShow = (message, type) => {
+    const id = Date.now();
+    setToasts((prev) => [{ id, message, type }, ...prev]);
 
-  const handleAdd = useCallback(
-    (message, type) => {
-      const id = Date.now();
-      setToasts((prevToasts) => [...prevToasts, { id, message, type }]);
-      timersRef.current[id] = setTimeout(() => handleClose(id), 5000);
-    },
-    [handleClose]
-  );
-
-  const toastClass = (type) =>
-    `toast ${type} p-2 mb-2 flex justify-between items-center rounded shadow`;
+    timeRef.current[id] = setTimeout(() => handleDisappear(id), 5000);
+  };
 
   return (
-    <div className="container">
+    <>
       <div className="toast-container">
-        {toasts.map(({ id, message, type }) => (
-          <div key={id} className={toastClass(type)}>
-            <span>{message}</span>
-            <button
-              className="close-btn text-red-500 ml-2"
-              onClick={() => handleClose(id)}
-            >
-              x
-            </button>
-          </div>
-        ))}
+        {toasts &&
+          toasts.map(({ id, message, type }) => (
+            <div className={`toast ${type}`} key={id}>
+              {message} <span onClick={() => handleDisappear(id)}>x</span>
+            </div>
+          ))}
       </div>
-      <div className="btn-container flex gap-2 mt-4">
-        {["Success", "Info", "Warning", "Error"].map((type) => (
-          <button
-            key={type}
-            onClick={() => handleAdd(`${type} Toast`, type.toLowerCase())}
-            className={`btn-${type.toLowerCase()} px-4 py-2 rounded bg-${type.toLowerCase()}-500 text-white`}
-          >
-            {type} Toast
+      <div className="container">
+        <div className="btn-container">
+          <button onClick={() => handleShow("Success", "success")}>
+            Success Toast
           </button>
-        ))}
+          <button onClick={() => handleShow("Info", "info")}>Info toast</button>
+          <button onClick={() => handleShow("Warning", "warning")}>
+            Warning toast
+          </button>
+          <button onClick={() => handleShow("Error", "error")}>
+            Error toast
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
-}
+};
+
+export default ToastContainer;
