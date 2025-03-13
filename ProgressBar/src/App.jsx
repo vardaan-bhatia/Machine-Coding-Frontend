@@ -6,7 +6,7 @@ const App = () => {
     <div className="App">
       <h1>Progress Bar</h1>
       {/*Progress bar component*/}
-      <ProgressBar PercentageValue={59} min={0} max={100} />
+      <ProgressBar PercentageValue={91} min={0} max={100} />
     </div>
   );
 };
