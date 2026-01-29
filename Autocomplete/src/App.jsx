@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import useFetch from "./Hooks/useFetch";
 import useDebounce from "./Hooks/useDebounce";
+import CountryList from "./Filterlist";
 
 const App = () => {
   const [value, setValue] = useState("");
@@ -21,7 +22,7 @@ const App = () => {
     return text
       .split(regex)
       .map((part, index) =>
-        regex.test(part) ? <span key={index}>{part}</span> : part
+        regex.test(part) ? <span key={index}>{part}</span> : part,
       );
   };
   useEffect(() => {
@@ -61,6 +62,7 @@ const App = () => {
             ) : (
               <p>No items found</p>
             )}
+            <CountryList />
           </div>
         </div>
       </div>
